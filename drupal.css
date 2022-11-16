@@ -1,0 +1,8 @@
+body {
+  font-family: sans;
+}
+
+ai-wrangler::part(legend) {
+  text-transform: uppercase;
+  font-weight: bold;
+}

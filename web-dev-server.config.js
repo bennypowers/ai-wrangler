@@ -4,5 +4,5 @@ export default {
   nodeResolve: true,
   watch: true,
   open: true,
-  plugins: [esbuildPlugin({ ts: true, target: 'auto' })],
+  plugins: [esbuildPlugin({ ts: true, target: 'es2020' })],
 }
