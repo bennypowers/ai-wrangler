@@ -14,7 +14,7 @@ function isUri(str: string): boolean {
 }
 
 class PickEvent extends Event {
-  constructor(public src: string|null = null) {
+  constructor(public src: string|null = null, public alt: string|null = null) {
     super('pick');
   }
 }
@@ -34,7 +34,7 @@ export class AiWrangler extends LitElement {
   @state() alts = [];
 
   @query('#size') sizeSelect!: HTMLSelectElement;
-  @query('output input[type=checkbox][selected]') selectedItem?: HTMLInputElement;
+  @query('output :checked') selectedItem?: HTMLInputElement;
   @queryAll('output [type=checkbox]') checkboxes!: NodeListOf<HTMLInputElement>;
 
   @property() prompt = '';
@@ -74,15 +74,15 @@ export class AiWrangler extends LitElement {
               <li part="output li">
                 <label ?disabled="${this.loading}">
                   <img part="output img" alt="${alt}" .src="${src}"/>
-                  <input type="checkbox" part="output checkbox" .value="${src}"/>
+                  <input type="checkbox" part="output checkbox" .value="${src}" data-alt="${alt}"/>
                 </label>
               </li>
             `)}</ol>
           </output>
 
           <section ?hidden="${this.loading || !this.images.length}">
-            <button type="reset" part="output button">Reset</button>
-            <button id="add" part="add button">Add</button>
+            <button type="reset"           part="output button">Reset</button>
+            <button type="submit" id="add" part="add button">Add</button>
           </section>
 
           <section id="loader" ?hidden="${!this.loading}">
@@ -108,6 +108,10 @@ export class AiWrangler extends LitElement {
 
   #onReset(event: Event) {
     event.preventDefault(); // otherwise output gets cleared
+    this.#reset();
+  }
+
+  #reset() {
     this.images = [];
   }
 
@@ -129,8 +133,15 @@ export class AiWrangler extends LitElement {
   }
 
   #add() {
-    if (!this.dispatchEvent(new PickEvent(this.selectedItem?.value))) {
-      
+    const src = this.selectedItem?.value;
+    const alt = this.selectedItem?.dataset.alt;
+    const srcInput: HTMLInputElement|null = this.querySelector('input[data-attribute=src]') ?? this.querySelector('input');
+    const altInput: HTMLInputElement|null = this.querySelector('input[data-attribute=alt]') ?? this.querySelector('input');
+    if (srcInput) { srcInput.value = src ?? ''; }
+    if (altInput) { altInput.value = alt ?? ''; }
+    console.log({src, alt});
+    if (this.dispatchEvent(new PickEvent(src, alt))) {
+      this.#reset();
     };
   }
 

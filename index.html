@@ -10,6 +10,17 @@
     <link rel="stylesheet" href="drupal.css">
   </head>
   <body>
-    <ai-wrangler></ai-wrangler>
+    <ai-wrangler>
+      <input data-attribute="src">
+      <input data-attribute="alt">
+    </ai-wrangler>
+    <script>
+    document.querySelector('ai-wrangler').addEventListener('pick', function() {
+      const img = new Image();
+      img.src = this.querySelector('[data-attribute=src]').value;
+      img.alt = this.querySelector('[data-attribute=alt]').value;
+      this.after(img);
+    })
+  </script>
   </body>
 </html>
