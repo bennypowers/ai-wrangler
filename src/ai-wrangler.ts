@@ -159,7 +159,7 @@ export class AiWrangler extends LitElement {
         const d = 20
         const MIN = 2500;
         const MAX = 10000;
-        const delay = Math.min(MIN, Math.random() * MAX);
+        const delay = Math.max(MIN, Math.random() * MAX);
         const int = setInterval(() => this.progress += (100 / (delay / d)), d);
         await new Promise(r => setTimeout(r, delay));
         clearInterval(int);
